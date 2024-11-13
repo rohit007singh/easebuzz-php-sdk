@@ -1,0 +1,16 @@
+{
+    "name": "rohitrawat/easebuzz-php-sdk",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Rohitrawat\\EasebuzzPhpSdk\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Rohit Singh",
+            "email": "rohitrawat0881@gmail.com"
+        }
+    ],
+    "require": {}
+}
