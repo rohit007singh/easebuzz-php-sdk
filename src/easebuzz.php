@@ -1,6 +1,9 @@
 <?php
 
-class Easebuzz{
+namespace Easebuzz;
+
+class Easebuzz
+{
     private $merchant_key;
     private $salt;
     private $env;
@@ -271,7 +274,7 @@ class Easebuzz{
             // second wayre
             echo "
                <script type='text/javascript'>
-                      window.location ='".$result->data."'
+                      window.location ='" . $result->data . "'
                </script>
             ";
 
@@ -372,7 +375,8 @@ class Easebuzz{
     * @return array with status and data - $params parameters or $salt are empty.
     * 
     */
-    function emptyValidation($params){
+    function emptyValidation($params)
+    {
         $empty_value = false;
         if (empty($params['key']))
             $empty_value = 'Merchant Key';
@@ -392,8 +396,8 @@ class Easebuzz{
         if (empty($params['phone']))
             $empty_value = 'Phone';
 
-        if (!empty($params['phone'])){
-            if (strlen((string)$params['phone'])!=10){
+        if (!empty($params['phone'])) {
+            if (strlen((string)$params['phone']) != 10) {
                 $empty_value = 'Phone number must be 10 digit and ';
             }
         }
@@ -441,7 +445,8 @@ class Easebuzz{
     * @return array with status and data - params parameters type mismatch.
     * 
     */
-    function typeValidation($params){
+    function typeValidation($params)
+    {
         $type_value = false;
         if (!is_string($params['key']))
             $type_value = "Merchant Key should be string";
@@ -493,7 +498,8 @@ class Easebuzz{
     * @return array with status and data - email format is incorrect.
     * 
     */
-    function email_validation($email){
+    function email_validation($email)
+    {
         $email_regx = "/^([\w\.-]+)@([\w-]+)\.([\w]{2,8})(\.[\w]{2,8})?$/";
         if (!preg_match($email_regx, $email)) {
             return array(
@@ -519,7 +525,8 @@ class Easebuzz{
     * @return string $url_link - holds the full URL.
     *
     */
-    function getURL($env){
+    function getURL($env)
+    {
         $url_link = '';
         switch ($env) {
             case 'test':
@@ -540,7 +547,7 @@ class Easebuzz{
         return $url_link;
     }
 
-/*
+    /*
     * _pay method initiate payment will be start from here.
     *
     * params array $params_array - holds all form data with merchant key, transaction id etc.
@@ -608,22 +615,23 @@ class Easebuzz{
     * @return integer status = 1 means success and go the url link.  
     *   
     */
-    function pay($params_array, $redirect, $salt_key, $url){
+    function pay($params_array, $redirect, $salt_key, $url)
+    {
 
         $hash_key = '';
         // generate hash key and push into params array.
         $hash_key = $this->getHashKey($params_array, $salt_key);
-        
+
         $params_array['hash'] = $hash_key;
-       
+
         // call curl_call() for initiate pay link
         $curl_result = $this->curlCall($url . 'payment/initiateLink', http_build_query($params_array));
-         
+
         //  print_r($curl_result);
         //  die;
-         
+
         $accesskey = ($curl_result->status === 1) ? $curl_result->data : null;
-        
+
         if (empty($accesskey)) {
             return $curl_result;
         } else {
@@ -632,14 +640,14 @@ class Easebuzz{
             } else {
                 $curl_result->data = $accesskey;
                 // return $accesskey;
-            }   
- 
+            }
+
 
             return $curl_result;
         }
     }
 
-/*
+    /*
     * _getHashKey method generate Hash key based on the API call (initiatePayment API).
     *
     * hash format (hash sequence) :
@@ -660,7 +668,8 @@ class Easebuzz{
     * @return string $hash - holds the generated hash key.  
     *
     */
-    function getHashKey($posted, $salt_key){
+    function getHashKey($posted, $salt_key)
+    {
         $hash_sequence = "key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5|udf6|udf7|udf8|udf9|udf10";
 
         // make an array or split into array base on pipe sign.
@@ -714,7 +723,8 @@ class Easebuzz{
     * - curl_status => 1 : means Success.
     *
     */
-    function curlCall($url, $params_array){
+    function curlCall($url, $params_array)
+    {
         // Initializes a new session and return a cURL.
         $cURL = curl_init();
 
@@ -757,7 +767,7 @@ class Easebuzz{
 
         return $result_response;
     }
-     /*
+    /*
         * easebuzzResponse mehod to verify easebuzz API response is acceptable or not.
         *
         * http method used - POST
@@ -788,14 +798,15 @@ class Easebuzz{
         * -- _getReverseHashKey(arg1, arg2) :- generate reverse hash key for validation.
         *
         */
-        public function easebuzzResponse($params){
-            $result = $this->response($params, $this->salt);
+    public function easebuzzResponse($params)
+    {
+        $result = $this->response($params, $this->salt);
 
-            return json_encode($result);
-        }
+        return json_encode($result);
+    }
 
 
-/*
+    /*
     * response method verify API response is acceptable or not and returns the response object.
     *  
     * params array $response_params - holds the response array.
@@ -817,7 +828,8 @@ class Easebuzz{
     * @return integer status = 1 means success. 
     *
     */
-    function response($response_params, $salt_key){
+    function response($response_params, $salt_key)
+    {
 
         // check return response params is array or not
         if (!is_array($response_params) || count($response_params) === 0) {
@@ -865,7 +877,8 @@ class Easebuzz{
     * @return array $temp_array - holds the all posted value after removing space.
     *
     */
-    function removeSpaceAndPrepareAPIResponseArray($response_array){
+    function removeSpaceAndPrepareAPIResponseArray($response_array)
+    {
         $temp_array = array();
         foreach ($response_array as $key => $value) {
             $temp_array[$key] = trim(htmlentities($value, ENT_QUOTES));
@@ -895,7 +908,8 @@ class Easebuzz{
     * @return integer status = 1 means success.
     *
     */
-    function getResponse($response_array, $s_key){
+    function getResponse($response_array, $s_key)
+    {
 
         // reverse hash key for validation means response is correct or not.
         $reverse_hash_key = $this->getReverseHashKey($response_array, $s_key);
@@ -930,7 +944,7 @@ class Easebuzz{
         }
     }
 
-/*
+    /*
     * _getReverseHashKey to generate Reverse hash key for validation
     *
     * reverse hash format (hash sequence) :
@@ -953,7 +967,8 @@ class Easebuzz{
     * @return string  $reverse_hash - holds the generated reverse hash key.
     *
     */
-    function getReverseHashKey($response_array, $s_key){
+    function getReverseHashKey($response_array, $s_key)
+    {
         $reverse_hash_sequence = "udf10|udf9|udf8|udf7|udf6|udf5|udf4|udf3|udf2|udf1|email|firstname|productinfo|amount|txnid|key";
 
         // make an array or split into array base on pipe sign.
@@ -970,5 +985,4 @@ class Easebuzz{
         // generate reverse hash key using hash function(predefine) and return
         return strtolower(hash('sha512', $reverse_hash));
     }
-
 }

@@ -1,15 +1,11 @@
 <?php
-    // include file
-    // include_once('easebuzz-lib/easebuzz_payment_gateway.php');
 
-    require_once __DIR__ . '/src/easebuzz.php';
+use Easebuzz\Easebuzz;
 
-    // salt for testing env
-    // get the slt from config.php file
-    $config = include('config.php');
-    $SALT = $config['SALT'];
+$config = include('config.php');
+$SALT = $config['SALT'];
 
-    /*
+/*
     * Get the API response and verify response is correct or not.
     *
     * params string $easebuzzObj - holds the object of Easebuzz class.
@@ -29,10 +25,8 @@
     * @return array $result - hoids API response after varification.
     *
     */
-    $easebuzzObj = new Easebuzz($MERCHANT_KEY = null, $SALT, $ENV = null);
-    
-    $result = $easebuzzObj->easebuzzResponse( $_POST );
- 
-    print_r($result);
-?>
+$easebuzzObj = new Easebuzz($MERCHANT_KEY = null, $SALT, $ENV = null);
 
+$result = $easebuzzObj->easebuzzResponse($_POST);
+
+print_r($result);

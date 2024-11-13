@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-require_once __DIR__ . '/src/easebuzz.php';
+use Easebuzz\Easebuzz;
 
 $config = include('config.php');
 $MERCHANT_KEY = $config['MERCHANT_KEY'];
@@ -9,7 +9,7 @@ $ENV = $config['ENV'];
 
 $easebuzz = new Easebuzz($MERCHANT_KEY, $SALT, $ENV);
 $data = [
-    "txnid" => rand(100000,999999),
+    "txnid" => rand(100000, 999999),
     "amount" => "100.0",
     "firstname" => "jitendra",
     "email" => "test@gmail.com",
@@ -34,8 +34,7 @@ $result = $easebuzz->initiatePaymentAPI($data);
 // redirect to the link
 easebuzzAPIResponse($result);
 
-function easebuzzAPIResponse($data){
-    header('Location: '.$data->data);
+function easebuzzAPIResponse($data)
+{
+    header('Location: ' . $data->data);
 }
-
-
