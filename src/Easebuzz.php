@@ -1,6 +1,6 @@
 <?php
 
-namespace Easebuzz;
+namespace Rohitrawat\EasebuzzPhpSdk;
 
 class Easebuzz
 {
